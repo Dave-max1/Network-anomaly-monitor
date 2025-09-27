@@ -1,0 +1,32 @@
+capture:
+  iface: "Software Loopback Interface 1"
+  bpf: ""
+  window_seconds: 60
+
+thresholds:
+  bytes_per_ip_per_window: 5_000_000       # 5 MB par minute => transfert massif
+  conn_count_per_ip_per_window: 200        # connections (SYNs) par minute
+  distinct_dst_ports_per_ip: 50            # balayage de ports
+
+clustering:
+  enabled: true
+  eps: 0.5
+  min_samples: 3
+
+alerts:
+  email:
+    enabled: true
+    smtp_host: "smtp.gmail.com"
+    smtp_port: 587
+    username: "davechedjoun@gmail.com"
+    password: "dqkn nlxu uudw nmko"
+    from_addr: "davechedjoun@gmail.com"
+    to_addrs:
+      - "dave.chedjoun@facsciences-uy1.cm"
+  webhook:
+    enabled: false
+    url: "http://127.0.0.1:5000/alert"
+
+logging:
+  logfile: "netwatcher.log"
+  level: "INFO"

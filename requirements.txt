@@ -1,0 +1,6 @@
+scapy
+pandas
+scikit-learn
+pyyaml
+python-dateutil
+requests

@@ -1,5 +1,5 @@
 capture:
-  iface: "Software Loopback Interface 1" # etho pour linux
+  iface: "Software Loopback Interface 1" # eth0 pour linux
   bpf: ""
   window_seconds: 60
 
@@ -19,7 +19,7 @@ alerts:
     smtp_host: "smtp.gmail.com"
     smtp_port: 587
     username: "davechedjoun@gmail.com"
-    password: "dqkn nlxu uudw nmko"
+    password: "your-app-password"
     from_addr: "davechedjoun@gmail.com"
     to_addrs:
       - "dave.chedjoun@facsciences-uy1.cm"

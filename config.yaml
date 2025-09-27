@@ -1,5 +1,5 @@
 capture:
-  iface: "Software Loopback Interface 1"
+  iface: "Software Loopback Interface 1" # etho pour linux
   bpf: ""
   window_seconds: 60
 
@@ -15,7 +15,7 @@ clustering:
 
 alerts:
   email:
-    enabled: true
+    enabled: false
     smtp_host: "smtp.gmail.com"
     smtp_port: 587
     username: "davechedjoun@gmail.com"

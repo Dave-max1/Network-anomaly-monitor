@@ -1,0 +1,27 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'gmail-notifier'
+
+receivers:
+  - name: 'gmail-notifier'
+    email_configs:
+      - to: "dave.chedjoun@facsciences-uy1.cm"
+        from: "davechedjoun@gmail.com"
+        smarthost: "smtp.gmail.com:587"
+        auth_username: "davechedjoun@gmail.com"
+        auth_identity: "davechedjoun@gmail.com"
+        auth_password: "your-app-password"
+        require_tls: true
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'dev', 'instance']

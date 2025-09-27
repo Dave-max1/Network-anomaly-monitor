@@ -1,6 +1,6 @@
 import smtplib
 import logging
-# import requests
+import requests
 import json
 from email.message import EmailMessage
 
@@ -17,8 +17,8 @@ class AlertManager:
         if self.email_cfg.get('enabled', False):
             self._send_email(alert_type, message)
         # webhook
-        # if self.webhook_cfg.get('enabled', False):
-        #     self._post_webhook(alert_type, context, message)
+        if self.webhook_cfg.get('enabled', False):
+            self._post_webhook(alert_type, context, message)
 
     def _send_email(self, alert_type, message):
         cfg = self.email_cfg
@@ -36,10 +36,10 @@ class AlertManager:
         except Exception as e:
             logging.exception("Failed to send alert email: %s", e)
 
-    # def _post_webhook(self, alert_type, context, message):
-    #     try:
-    #         payload = {'type': alert_type, 'message': message, 'context': context}
-    #         r = requests.post(self.webhook_cfg['url'], json=payload, timeout=5)
-    #         logging.info("Webhook posted status=%s", r.status_code)
-    #     except Exception as e:
-    #         logging.exception("Failed to post webhook: %s", e)
+    def _post_webhook(self, alert_type, context, message):
+        try:
+            payload = {'type': alert_type, 'message': message, 'context': context}
+            r = requests.post(self.webhook_cfg['url'], json=payload, timeout=5)
+            logging.info("Webhook posted status=%s", r.status_code)
+        except Exception as e:
+            logging.exception("Failed to post webhook: %s", e)

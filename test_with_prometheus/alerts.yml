@@ -1,0 +1,47 @@
+groups:
+  - name: network_alerts
+    rules:
+      - alert: HighTrafficOut
+        expr: rate(network_bytes_sent[1m]) > 5000000  # 5MB/s
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Trafic sortant élevé détecté"
+          description: "Le trafic sortant dépasse 5MB/s"
+
+      - alert: TooManyConnections
+        expr: network_active_connections > 100
+        for: 0s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nombre élevé de connexions TCP"
+          description: "Plus de 100 connexions TCP actives détectées"
+
+      - alert: HighTrafficIn
+        expr: rate(network_bytes_recv[1m]) > 5000000  # 5MB/s
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Trafic entrant élevé détecté"
+          description: "Le trafic entrant dépasse 5MB/s"
+
+      - alert: NetworkErrorsIn
+        expr: rate(network_errors_in[1m]) > 100
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Erreurs réseau entrantes élevées"
+          description: "Plus de 100 erreurs entrantes par minute détectées"
+
+      - alert: TestEmail
+        expr: vector(1)
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Test email Alertmanager"
+          description: "Ceci est un test pour vérifier l'envoi Gmail"

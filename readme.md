@@ -42,3 +42,40 @@ Outil simple qui capture le trafic et détecte comportements anormaux (transfert
 - Utiliser la configuration alertmanager.yml en le mettant à la racine de l'alert manager et lancer avec ./alertmanager --config.file=alertmanager.yml
 
 3. Lancer l'exporteur prometheus avec `python main.py` (rassurer votre d'être dans le repertoire `test_with_prometheus`)
+
+## Choix techniques
+
+| Composant         | Choix technique                      | Justification                                                                 | Limites                                                                 |
+|-------------------|--------------------------------------|-------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| Capture trafic    | Scapy                                | Simple, flexible, permet injecter ou analyser paquets IP/TCP/UDP             | Nécessite privilèges root / Npcap, performances limitées sur gros réseaux |
+| Détection anomalies | Seuils + DBSCAN                     | Permet détecter facilement transferts massifs, SYN floods, scans de ports    | Détection basique, seuils statiques, peut générer faux positifs ou rater attaques subtiles |
+| Export métriques  | `prometheus_client` (Gauge)          | Standard Prometheus, compatible avec alerting                                | Valeurs instantanées, pas de stockage historique interne                |
+| Alerting          | SMTP (Gmail) + webhook               | Permet recevoir alertes par mail et intégrer à systèmes externes             | Dépend du SMTP, risque blocage par Gmail si mauvais mot de passe, limites de quotas |
+| Simulation        | Scapy                                | Permet générer différents types d’attaques pour tests                        | À n’utiliser que sur réseau de test (loopback / lab)                   |
+| Monitoring central| Prometheus + Alertmanager            | Standard industrie, intégration facile, visualisation via Grafana possible   | Nécessite configuration IP correcte si exporter sous WSL/Windows       |
+
+---
+
+## Cas couverts
+
+- **Transferts massifs**  
+  Détecte les IP émettant ou recevant plus de `X` octets par fenêtre configurable. Utile pour identifier exfiltration de données ou anomalies réseau.
+
+- **Connexions inhabituelles / SYN flood**  
+  Détecte les IP initiant plus de `Y` connexions TCP par fenêtre. Utile pour repérer scans de ports ou attaques DoS.
+
+- **Scan de ports / activités suspectes**  
+  Compte le nombre de ports distincts contactés par IP ; déclenche une alerte si le seuil est dépassé.
+
+- **Alertes centralisées**  
+  Envoi d’alertes par mail (Gmail) et webhook pour intégration SIEM / dashboard. Intégration avec Prometheus & Alertmanager pour visualisation et historique.
+
+- **Tests et simulations**  
+  Génération de trafic synthétique pour valider les règles et les alertes. Scénarios fournis : SYN flood, transfert massif, UDP/ICMP flood, scan de ports.
+
+---
+
+## Limites connues
+
+- Performances limitées sur gros réseaux en raison de Scapy et Python (outil conçu pour petit bureau / lab).  
+- Détection basée principalement sur **seuils statiques** → nécessite ajustement selon
